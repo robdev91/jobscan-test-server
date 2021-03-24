@@ -1,15 +1,20 @@
 
 const Sequelize = require("sequelize")
 
+const mode = process.env.ENVIRONMENT
+const dialectOptions = ((mode === 'dev') ? {} : {
+  ssl: {
+    require: true,
+    rejectUnauthorized: false,
+  },
+})
+const SQL = ((mode === 'dev') ? 'mysql' : 'postgres')
+console.log(process.env.ENVIRONMENT)
+console.log(dialectOptions)
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  protocol: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    }
-  }
+  dialect: SQL,
+  protocol: SQL,
+  dialectOptions
 })
 
 const db = {}

@@ -1,6 +1,7 @@
 const db = require("../models")
 const Jobs = db.jobs
 const Skills = db.skills
+const JobSkills = db.job_skills
 
 // Create and Save a new Job
 exports.create = (req, res) => {
@@ -15,51 +16,84 @@ exports.create = (req, res) => {
   const id = req.body.id
   const title = req.body.title
   const company = req.body.company
-  const skills = req.body.skills.split(',')
+  const skills = req.body.skills.split(',').map(item => item.trim())
 
-  // Create a Job
   const job = {
     id,
     title,
     company,
   }
 
-  // Save Job in the database
-  createJob(job, (err, job_data) => {
-    if (err) {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Job."
-      })
-    } else {
-      // Save skills
-      createSkills(skills, (err, skill_data) => {
-        if (err) {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while creating the Job."
-          })
-        } else {
-          res.status(200).send({
-            job_data,
-            skill_data
-          })
-        }
-      })
-    }
-  })
+  createJob(job, skills, req, res)
 }
 
-const createJob = (job, callback) => {
+// Create a job
+const createJob = (job, skills, req, res) => {
   Jobs.create(job)
-    .then(data => callback(null, data))
-    .catch(err => callback(err))
+    .then(data => createSkills(data.id, skills, req, res))
+    .catch(err => {
+      console.log(err)
+      res.status(500).send({
+        message: "Some error occurred while creating the Job."
+      })
+    })
 }
 
-const createSkills = (names = [], callback) => {
-  let skills = []
-  names.forEach(name => skills.push({name}))
-  Skills.bulkCreate(skills)
-    .then(data => callback(null, data))
-    .catch(err => callback(err))
+// Create skills if not exist
+const createSkills = (job_id, skills, req, res) => {
+  const skill_arr = skills.map(skill => { return { name: skill } })
+  if (skill_arr.length !== 0) {
+    Skills.bulkCreate(skill_arr, { ignoreDuplicates: true })
+      .then(_data => fetchSkillIds(job_id, skills, req, res))
+      .catch(err => {
+        console.log(err)
+        res.status(500).send({
+          message: "Some error occurred while creating the skills."
+        })
+      })
+  } else {
+    fetchSkillIds(job_id, skills, req, res)
+  }
+}
+
+// Fetch skill ids
+const fetchSkillIds = (job_id, skills, req, res) => {
+  if (skills.length !== 0) {
+    Skills.findAll({
+      where: {
+        name: skills
+      }
+    }).then(data => insertJobSkills(job_id, data, req, res))
+      .catch(err => {
+        console.log(err)
+        res.status(500).send({
+          message: "Some error occurred while fetching skill ids."
+        })
+      })
+  } else {
+    insertJobSkills(job_id, [], req, res)
+  }
+}
+
+// Insert job_skills
+const insertJobSkills = (job_id, skill_ids, req, res) => {
+  const job_skills = skill_ids.map(skill => { return { job_id, skill_id: skill.id } })
+  if (job_skills.length !== 0) {
+    JobSkills.bulkCreate(job_skills, { ignoreDuplicates: true })
+      .then(_data => {
+        res.send({
+          message: 'Successfully added the job with skills'
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).send({
+          message: "Some error occurred while creating the skills."
+        })
+      })
+  } else {
+    res.send({
+      message: 'Successfully added the job with skills'
+    })
+  }
 }
