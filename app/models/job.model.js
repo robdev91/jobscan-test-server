@@ -7,14 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
     },
     title: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     company: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
-    skills: {
-      type: Sequelize.STRING
-    }
   });
 
   return Job;
