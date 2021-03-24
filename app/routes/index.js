@@ -1,7 +1,7 @@
 module.exports = app => {
-  const jobRouter = require("./job.routes");
-  const skillRouter = require("./skill.routes");
+  const jobRouter = require("./job.routes")
+  const skillRouter = require("./skill.routes")
 
-  app.use('/api/jobs', jobRouter);
-  app.use('/api/skills', skillRouter);
-};
+  app.use('/api/jobs', jobRouter)
+  app.use('/api/skills', skillRouter)
+}

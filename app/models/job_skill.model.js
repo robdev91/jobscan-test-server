@@ -4,9 +4,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
     },
     skill_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
-  });
+  })
 
-  return Job_skill;
-};
+  return Job_skill
+}

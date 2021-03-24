@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     score: {
       type: Sequelize.INTEGER,
     },
-  });
+  })
 
-  return Search;
-};
+  return Search
+}
