@@ -9,8 +9,6 @@ const dialectOptions = ((mode === 'dev') ? {} : {
   },
 })
 const SQL = ((mode === 'dev') ? 'mysql' : 'postgres')
-console.log(process.env.ENVIRONMENT)
-console.log(dialectOptions)
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: SQL,
   protocol: SQL,

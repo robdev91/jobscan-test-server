@@ -37,7 +37,6 @@ exports.create = (req, res) => {
 exports.fillMock = () => {
   const csv = require('csvtojson')
   const path = require('path')
-  console.log(__dirname)
   csv()
     .fromFile(path.join(__dirname, '..', '..', 'mock.csv'))
     .then(data => {
