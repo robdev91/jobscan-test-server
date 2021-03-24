@@ -1,13 +1,13 @@
-const express = require("express")
-const bodyParser = require("body-parser")
-const cors = require("cors")
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
 require('dotenv').config()
 
 const app = express()
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: 'http://localhost:8081'
 }
 
 app.use(cors(corsOptions))
@@ -21,13 +21,13 @@ app.use(express.urlencoded({
 }))
 
 // database initialize
-const db = require("./app/models")
+const db = require('./app/models')
 db.sequelize.sync().then(_ => {
   require('./app/controllers/job.controller').fillMock()
 })
 
 // routes
-require("./app/routes")(app)
+require('./app/routes')(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080
