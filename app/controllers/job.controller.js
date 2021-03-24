@@ -25,7 +25,7 @@ exports.create = (req, res) => {
   }
 
   // Save Job in the database
-  createJob(job, (err, data) => {
+  createJob(job, (err, job_data) => {
     if (err) {
       res.status(500).send({
         message:
@@ -33,24 +33,33 @@ exports.create = (req, res) => {
       })
     } else {
       // Save skills
+      createSkills(skills, (err, skill_data) => {
+        if (err) {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the Job."
+          })
+        } else {
+          res.status(200).send({
+            job_data,
+            skill_data
+          })
+        }
+      })
     }
   })
 }
 
 const createJob = (job, callback) => {
   Jobs.create(job)
-    .then(data => {
-      callback(null, data)
-    })
-    .catch(err => {
-      callback(err)
-    })
+    .then(data => callback(null, data))
+    .catch(err => callback(err))
 }
 
-const insertSkills = (names = [], success, err) => {
+const createSkills = (names = [], callback) => {
   let skills = []
   names.forEach(name => skills.push({name}))
   Skills.bulkCreate(skills)
-    .then(success)
-    .catch(err)
+    .then(data => callback(null, data))
+    .catch(err => callback(err))
 }
