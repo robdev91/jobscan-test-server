@@ -22,7 +22,12 @@ app.use(express.urlencoded({
 
 // database initialize
 const db = require("./app/models")
-db.sequelize.sync()
+db.sequelize.sync().then(_ => {
+  const mode = process.env.ENVIRONMENT
+  if (mode === 'dev') {
+    require('./app/controllers/job.controller').fillMock()
+  }
+})
 
 // routes
 require("./app/routes")(app)
