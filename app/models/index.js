@@ -18,6 +18,8 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.jobs = require("./job.model.js")(sequelize, Sequelize);
+db.jobs = require("./job.model")(sequelize, Sequelize);
+db.skills = require("./skill.model")(sequelize, Sequelize);
+db.job_skills = require("./job_skill.model")(sequelize, Sequelize);
 
 module.exports = db;
