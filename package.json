@@ -27,5 +27,8 @@
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.6.1"
+  },
+  "devDependencies": {
+    "mysql2": "^2.2.5"
   }
 }
