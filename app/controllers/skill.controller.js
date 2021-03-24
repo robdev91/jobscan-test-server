@@ -1,5 +1,6 @@
 const db = require("../models");
 const Skills = db.skills;
+const helper = require('./helpers');
 
 exports.findAll = (req, res) => {
   Skills.findAll()
@@ -15,7 +16,7 @@ exports.findAll = (req, res) => {
 }
 
 exports.create = (req, res) => {
-  insert_skill([req.body.name],
+  helper.bulkInsertSkill([req.body.name],
     data => {
       res.send(data);
     },
@@ -25,12 +26,4 @@ exports.create = (req, res) => {
           err.message || "Some error occurred while creating the Job."
       });
     });
-}
-
-const insert_skill = (names = [], success, err) => {
-  let skills = [];
-  names.forEach(name => skills.push({name}));
-  Skills.bulkCreate(skills)
-    .then(success)
-    .catch(err);
 }
