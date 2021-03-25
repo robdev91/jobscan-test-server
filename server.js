@@ -7,7 +7,7 @@ require('dotenv').config()
 const app = express()
 
 var corsOptions = {
-  origin: '*'
+  origin: 'https://jobscan-test.web.app'
 }
 
 app.use(cors(corsOptions))
