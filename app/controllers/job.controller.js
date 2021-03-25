@@ -130,13 +130,17 @@ const findJobs = (err, search_id, res) => {
   }
   db.sequelize.query(
     '\
-    SELECT `a`.*, `b`.`score` FROM `jobs` `a` \
-      INNER JOIN \
+    SELECT `a`.*, `b`.`score`, GROUP_CONCAT(`c`.`skill_id`) as `skills` FROM `jobs` `a` \
+      LEFT JOIN \
       (SELECT `job_skills`.`job_id`, SUM(`score`) as `score` FROM `job_skills` \
         INNER JOIN `search_params` \
         ON `job_skills`.`skill_id`=`search_params`.`skill_id` \
         WHERE `search_params`.`search_id`=' + search_id + ' GROUP BY `job_skills`.`job_id`) `b` \
-      ON `a`.`id`=`b`.`job_id` ORDER BY `b`.`score` DESC'
+      ON `a`.`id`=`b`.`job_id` \
+      LEFT JOIN `job_skills` `c` \
+      ON `a`.`id`=`c`.`job_id` \
+      GROUP BY `a`.`id` \
+      ORDER BY `b`.`score` DESC'
   , { type: QueryTypes.SELECT })
     .then(data => {
       res.send({ jobs: data })
