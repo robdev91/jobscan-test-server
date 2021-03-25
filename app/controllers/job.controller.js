@@ -139,7 +139,7 @@ const findJobs = (err, search_id, res) => {
       ON `a`.`id`=`b`.`job_id` ORDER BY `b`.`score` DESC'
   , { type: QueryTypes.SELECT })
     .then(data => {
-      res.send({ data })
+      res.send({ jobs: data })
     })
     .catch(err => {
       res.send({
