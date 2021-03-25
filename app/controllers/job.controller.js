@@ -129,7 +129,7 @@ const findJobs = (err, search_id, res) => {
     return
   }
   db.sequelize.query(
-    `SELECT a.*, b.score, GROUP_CONCAT(c.skill_id) as skills FROM jobs a
+    `SELECT a.*, coalesce(b.score, 0) as score, string_agg(c.skill_id::character varying, ',') as skills FROM jobs a
       LEFT JOIN
       (SELECT job_skills.job_id, SUM(score) as score FROM job_skills
         INNER JOIN search_params
@@ -139,8 +139,8 @@ const findJobs = (err, search_id, res) => {
       ON a.id=b.job_id
       LEFT JOIN job_skills c
       ON a.id=c.job_id
-      GROUP BY a.id
-      ORDER BY b.score DESC`
+      GROUP BY a.id, b.score
+      ORDER BY score DESC`
   , { type: QueryTypes.SELECT })
     .then(data => {
       res.send({ jobs: data })
