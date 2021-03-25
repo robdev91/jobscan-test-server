@@ -4,7 +4,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
     },
     skill_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
   })
 
